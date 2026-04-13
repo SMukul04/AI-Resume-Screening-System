@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screening System - Upload Resumes</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <h2 class="sidebar-title">Resume Screening System</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="job-description.html" class="nav-link">
+                        <i class="fas fa-file-contract"></i>
+                        <span>Job Description</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="upload-resumes.html" class="nav-link">
+                        <i class="fas fa-folder-open"></i>
+                        <span>Upload Resumes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="processing.html" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Processing</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="results.html" class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Results</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>History</span>
+                    </a>
+                </li>
+                <li class="nav-item nav-logout">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-wrapper" id="mainWrapper">
+
+        <!-- ===== TOP NAVBAR ===== -->
+        <header class="top-navbar">
+            <div class="navbar-left">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Upload Candidate Resumes</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="navbar-icon-btn" onclick="window.location.href='dashboard.html'">
+                    <i class="fas fa-home"></i>
+                </button>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span class="profile-name">Recruiter</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-user-circle"></i> Profile
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <hr class="dropdown-divider">
+                        <a href="dashboard.html" class="dropdown-item dropdown-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN AREA ===== -->
+        <main class="main-content">
+
+            <!-- Upload Area -->
+            <section class="upload-card">
+                <h2 class="section-title">Upload Resume Files</h2>
+                <p class="upload-subtitle">Drag &amp; drop resumes below or click to choose files. Supported: PDF, DOC, DOCX.</p>
+
+                <div id="dropZone" class="upload-dropzone">
+                    <div class="upload-dropzone-inner">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <p class="upload-main-text">Drag &amp; Drop Resumes Here</p>
+                        <p class="upload-or-text">or</p>
+                        <button id="browseBtn" type="button" class="btn btn-outline">Click to Upload</button>
+                        <p class="upload-help-text">Supported formats: PDF, DOC, DOCX</p>
+                    </div>
+                    <input id="fileInput" type="file" multiple accept=".pdf,.doc,.docx,.DOC,.DOCX,.PDF">
+                </div>
+
+                <div class="upload-actions-row">
+                    <button id="uploadBtn" type="button" class="btn btn-primary">
+                        <i class="fas fa-file-upload"></i> Upload Selected Files
+                    </button>
+                    <span class="upload-count" id="selectedCount">No files selected</span>
+                </div>
+            </section>
+
+            <!-- Uploaded List -->
+            <section class="upload-list-card">
+                <div class="table-header">
+                    <h3 class="section-title">Uploaded Resume List</h3>
+                </div>
+                <div class="table-wrapper">
+                    <table class="screenings-table">
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Size</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="uploadedTableBody">
+                            <!-- rows injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="upload-footer">
+                    <span id="totalUploadedText">Total Resumes Uploaded: 0</span>
+                </div>
+            </section>
+
+            <!-- Bottom Actions -->
+            <section class="upload-bottom-actions">
+                <button id="startProcessingFromUpload" class="btn btn-primary">
+                    Start Processing
+                </button>
+                <button id="backToDashboard" class="btn btn-outline">
+                    Back to Dashboard
+                </button>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="../javascript/dashboard.js"></script>
+    <script src="../javascript/upload-resumes.js"></script>
+</body>
+</html>
+

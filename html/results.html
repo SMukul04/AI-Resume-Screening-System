@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screening System - Results</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <h2 class="sidebar-title">Resume Screening System</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="job-description.html" class="nav-link">
+                        <i class="fas fa-file-contract"></i>
+                        <span>Job Description</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="upload-resumes.html" class="nav-link">
+                        <i class="fas fa-folder-open"></i>
+                        <span>Upload Resumes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="processing.html" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Processing</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="results.html" class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Results</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>History</span>
+                    </a>
+                </li>
+                <li class="nav-item nav-logout">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-wrapper" id="mainWrapper">
+
+        <!-- ===== TOP NAVBAR ===== -->
+        <header class="top-navbar">
+            <div class="navbar-left">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Candidate Ranking Results</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="navbar-icon-btn" onclick="window.location.href='dashboard.html'">
+                    <i class="fas fa-home"></i>
+                </button>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span class="profile-name">Recruiter</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-user-circle"></i> Profile
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <hr class="dropdown-divider">
+                            <a href="dashboard.html" class="dropdown-item dropdown-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN AREA ===== -->
+        <main class="main-content results-layout">
+
+            <!-- Summary + filters -->
+            <section class="results-summary-card">
+                <div class="results-summary-top">
+                    <div>
+                        <h2 class="section-title">Candidate Ranking Results</h2>
+                        <p class="results-subtitle">Job Role: <span id="resultsJobRole">Data Analyst</span></p>
+                        <p class="results-subtitle">Total Resumes Processed: <span id="resultsTotalResumes">0</span></p>
+                        <p class="results-method">Matching Method: TF-IDF + Cosine Similarity</p>
+                    </div>
+                </div>
+
+                <div class="results-filters">
+                    <div class="results-search">
+                        <input type="text" id="candidateSearch" placeholder="Search candidate by name or skill">
+                        <button id="searchBtn" class="btn btn-outline btn-sm">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                    <div class="results-filter-selects">
+                        <select id="topFilter">
+                            <option value="5">Show Top 5</option>
+                            <option value="10">Show Top 10</option>
+                            <option value="all" selected>Show All</option>
+                        </select>
+                        <select id="scoreFilter">
+                            <option value="50">Match &gt; 50%</option>
+                            <option value="60">Match &gt; 60%</option>
+                            <option value="70">Match &gt; 70%</option>
+                            <option value="80">Match &gt; 80%</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Table + top candidate -->
+            <section class="results-main-row">
+                <div class="results-table-card">
+                    <h3 class="section-title">Candidate Ranking Table</h3>
+                    <div class="table-wrapper">
+                        <table class="screenings-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Candidate Name</th>
+                                    <th>Match Score</th>
+                                    <th>Matched Skills</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsTableBody">
+                                <!-- rows rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <aside class="results-top-card" id="topCandidateCard">
+                    <h3 class="section-title"><i class="fas fa-trophy"></i> Best Match Candidate</h3>
+                    <p class="results-top-name" id="topCandidateName">Rahul Sharma</p>
+                    <p class="results-top-score">Match Score: <span id="topCandidateScoreDetail">89%</span></p>
+                    <p class="results-top-skills">Key Skills: <span id="topCandidateSkills">Python, SQL, Machine Learning</span></p>
+                </aside>
+            </section>
+
+            <!-- Bottom buttons -->
+            <section class="results-actions">
+                <button id="downloadReportBtn" class="btn btn-outline">
+                    <i class="fas fa-download"></i> Download Report
+                </button>
+                <button id="newScreeningBtn" class="btn btn-primary">
+                    Start New Screening
+                </button>
+                <button id="backDashboardBtn" class="btn btn-outline">
+                    Dashboard
+                </button>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="../javascript/dashboard.js"></script>
+    <script src="../javascript/results.js"></script>
+</body>
+</html>
+
