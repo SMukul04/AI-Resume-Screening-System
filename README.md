@@ -33,3 +33,20 @@ http://127.0.0.1:5000
 - Add database (MongoDB/MySQL)
 - Improve UI/UX
 - Add authentication system
+
+## 📷 Screenshots
+
+### Dashboard
+![Dashboard](Images/dashboard.png)
+
+### Job Description
+![Job Description](Images/job-description.png)
+
+### Upload Resumes
+![Upload](Images/upload.png)
+
+### Results
+![Results](Images/results.png)
+
+### History
+![History](Images/history.png)
