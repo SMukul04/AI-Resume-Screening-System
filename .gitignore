@@ -1,0 +1,42 @@
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache & artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Environment and sensitive configurations
+.env
+.env.*
+*.local
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploaded candidate files and data
+python/uploads/*
+!python/uploads/.gitkeep
+python/data.json
+python/data.json.*
+*.pdf
+*.docx
+*.doc
+
+# Datasets and images
+data/
+Images/
+Project Flow/
+
+# Model caches and temporary files
+.cache/
+*.log
+tmp/
+temp/

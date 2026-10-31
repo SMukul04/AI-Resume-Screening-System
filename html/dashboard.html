@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screening System - Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <h2 class="sidebar-title">Resume Screening System</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item active">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="job-description.html" class="nav-link">
+                        <i class="fas fa-file-contract"></i>
+                        <span>Job Description</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="upload-resumes.html" class="nav-link">
+                        <i class="fas fa-folder-open"></i>
+                        <span>Upload Resumes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="processing.html" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Processing</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="results.html" class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Results</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>History</span>
+                    </a>
+                </li>
+                <li class="nav-item nav-logout">
+                    <a href="#" class="nav-link" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-wrapper" id="mainWrapper">
+
+        <!-- ===== TOP NAVBAR ===== -->
+        <header class="top-navbar">
+            <div class="navbar-left">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Dashboard</h1>
+            </div>
+            <div class="navbar-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search..." id="searchInput">
+                </div>
+                <button class="navbar-icon-btn" id="notificationBtn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span class="profile-name">Recruiter</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-user-circle"></i> Profile
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <hr class="dropdown-divider">
+                        <a href="#" class="dropdown-item dropdown-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN AREA ===== -->
+        <main class="main-content">
+
+            <!-- WELCOME BANNER -->
+            <section class="welcome-banner">
+                <div class="welcome-text">
+                    <h2>Welcome back, <span class="highlight">Recruiter</span>!</h2>
+                    <p>Start a new screening session or continue where you left off.</p>
+                    <div class="welcome-actions">
+                        <button class="btn btn-primary" id="startNewBtn">
+                            <i class="fas fa-plus-circle"></i> Start New Screening
+                        </button>
+                        <button class="btn btn-outline" id="viewHistoryBtn">
+                            <i class="fas fa-history"></i> View Screening History
+                        </button>
+                    </div>
+                </div>
+                <div class="welcome-illustration">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+            </section>
+
+            <!-- QUICK STATS PANEL -->
+            <section class="stats-panel">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #e0f0ff; color: #1a73e8;">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="totalScreenings">8</span>
+                        <span class="stat-label">Total Screenings</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #e8f5e9; color: #2e7d32;">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="resumesUploaded">124</span>
+                        <span class="stat-label">Resumes Uploaded</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fff3e0; color: #ef6c00;">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="avgMatchScore">67%</span>
+                        <span class="stat-label">Average Match Score</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fce4ec; color: #c62828;">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="topCandidateScore">91%</span>
+                        <span class="stat-label">Top Candidate Score</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TOP SKILLS -->
+            <section class="top-skills-card">
+                <h3 class="section-title">Top Skills</h3>
+                <ul class="top-skills-list" id="topSkillsList">
+                    <li class="top-skill-item">No data yet — run processing to see insights</li>
+                </ul>
+            </section>
+
+            <!-- WORKFLOW CARDS -->
+            <section class="workflow-section">
+                <h3 class="section-title">Screening Workflow</h3>
+                <div class="workflow-cards">
+                    <div class="workflow-card" id="cardJD">
+                        <div class="card-icon">
+                            <i class="fas fa-file-contract"></i>
+                        </div>
+                        <h4 class="card-title">Job Description</h4>
+                        <p class="card-status status-danger" id="jdStatus">
+                            <i class="fas fa-times-circle"></i> Not Added
+                        </p>
+                        <button class="btn btn-card" onclick="window.location.href='job-description.html'">
+                            <i class="fas fa-arrow-right"></i> Add / Edit
+                        </button>
+                    </div>
+                    <div class="workflow-card" id="cardUpload">
+                        <div class="card-icon">
+                            <i class="fas fa-file-upload"></i>
+                        </div>
+                        <h4 class="card-title">Resume Upload</h4>
+                        <p class="card-status status-neutral" id="uploadStatus">
+                            <i class="fas fa-info-circle"></i> 0 resumes uploaded
+                        </p>
+                        <button class="btn btn-card" onclick="window.location.href='upload-resumes.html'">
+                            <i class="fas fa-arrow-right"></i> Upload
+                        </button>
+                    </div>
+                    <div class="workflow-card" id="cardProcessing">
+                        <div class="card-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <h4 class="card-title">Processing</h4>
+                        <p class="card-status status-neutral" id="processingStatus">
+                            <i class="fas fa-info-circle"></i> Not started
+                        </p>
+                        <button class="btn btn-card" id="startProcessingBtn">
+                            <i class="fas fa-arrow-right"></i> Start Processing
+                        </button>
+                    </div>
+                    <div class="workflow-card" id="cardResults">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h4 class="card-title">Ranking Results</h4>
+                        <p class="card-status status-neutral" id="resultsStatus">
+                            <i class="fas fa-info-circle"></i> Not generated
+                        </p>
+                        <button class="btn btn-card" onclick="window.location.href='results.html'">
+                            <i class="fas fa-arrow-right"></i> View Results
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BOTTOM ROW: SCREENING SUMMARY + TIPS -->
+            <div class="bottom-row">
+
+                <!-- CURRENT SCREENING SUMMARY -->
+                <section class="screening-summary">
+                    <h3 class="section-title">Current Screening Summary</h3>
+                    <div class="summary-card">
+                        <div class="summary-row">
+                            <span class="summary-label">Current Job</span>
+                            <span class="summary-value" id="currentJob">Data Analyst</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Resumes Uploaded</span>
+                            <span class="summary-value" id="currentResumes">15</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Job Description</span>
+                            <span class="summary-value badge-success" id="currentJDStatus">Added</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Processing Status</span>
+                            <span class="summary-value badge-warning" id="currentProcessing">Pending</span>
+                        </div>
+                        <button class="btn btn-primary btn-full" id="continueScreeningBtn">
+                            <i class="fas fa-arrow-right"></i> Continue Screening
+                        </button>
+                    </div>
+                </section>
+
+                <!-- RESUME MATCH PIE CHART -->
+                <section class="chart-card">
+                    <h3 class="section-title">Resume Match Overview</h3>
+                    <div class="chart-container">
+                        <canvas id="resumePieChart"></canvas>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #2e7d32;"></span>
+                            <span>Qualified (<span id="qualifiedCount">9</span>)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #c62828;"></span>
+                            <span>Not Qualified (<span id="notQualifiedCount">6</span>)</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- RECENT SCREENINGS TABLE -->
+            <section class="recent-screenings">
+                <div class="table-header">
+                    <h3 class="section-title">Recent Screenings</h3>
+                    <a href="history.html" class="btn btn-outline btn-sm">
+                        <i class="fas fa-history"></i> View More
+                    </a>
+                </div>
+                <div class="table-wrapper">
+                    <table class="screenings-table">
+                        <thead>
+                            <tr>
+                                <th>Screening ID</th>
+                                <th>Job Title</th>
+                                <th>Resumes</th>
+                                <th>Date</th>
+                                <th>Top Score</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="screeningsTableBody">
+                            <tr>
+                                <td><span class="screening-id">SCR-001</span></td>
+                                <td>Data Analyst</td>
+                                <td>12</td>
+                                <td>20 Feb</td>
+                                <td><span class="score-badge high">89%</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-view" onclick="viewScreening('SCR-001')">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="btn btn-sm btn-delete" onclick="deleteScreening('SCR-001')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="screening-id">SCR-002</span></td>
+                                <td>Web Developer</td>
+                                <td>8</td>
+                                <td>18 Feb</td>
+                                <td><span class="score-badge medium">76%</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-view" onclick="viewScreening('SCR-002')">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="btn btn-sm btn-delete" onclick="deleteScreening('SCR-002')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="screening-id">SCR-003</span></td>
+                                <td>ML Engineer</td>
+                                <td>20</td>
+                                <td>15 Feb</td>
+                                <td><span class="score-badge high">92%</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-view" onclick="viewScreening('SCR-003')">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="btn btn-sm btn-delete" onclick="deleteScreening('SCR-003')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="screening-id">SCR-004</span></td>
+                                <td>Python Developer</td>
+                                <td>15</td>
+                                <td>12 Feb</td>
+                                <td><span class="score-badge medium">71%</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-view" onclick="viewScreening('SCR-004')">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="btn btn-sm btn-delete" onclick="deleteScreening('SCR-004')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- NOTIFICATION PANEL -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notification-header">
+            <h4>Notifications</h4>
+            <button class="btn-close-notif" id="closeNotifBtn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="notification-list">
+            <div class="notif-item unread">
+                <i class="fas fa-check-circle notif-icon success"></i>
+                <div class="notif-content">
+                    <p>Screening SCR-001 completed successfully.</p>
+                    <span class="notif-time">2 hours ago</span>
+                </div>
+            </div>
+            <div class="notif-item unread">
+                <i class="fas fa-upload notif-icon info"></i>
+                <div class="notif-content">
+                    <p>12 resumes uploaded for Data Analyst role.</p>
+                    <span class="notif-time">3 hours ago</span>
+                </div>
+            </div>
+            <div class="notif-item">
+                <i class="fas fa-exclamation-triangle notif-icon warning"></i>
+                <div class="notif-content">
+                    <p>Processing for SCR-002 is still pending.</p>
+                    <span class="notif-time">1 day ago</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../javascript/dashboard.js"></script>
+</body>
+</html>

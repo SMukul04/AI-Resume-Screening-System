@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screening System - Processing</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <h2 class="sidebar-title">Resume Screening System</h2>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="job-description.html" class="nav-link">
+                        <i class="fas fa-file-contract"></i>
+                        <span>Job Description</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="upload-resumes.html" class="nav-link">
+                        <i class="fas fa-folder-open"></i>
+                        <span>Upload Resumes</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="processing.html" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Processing</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="results.html" class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Results</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>History</span>
+                    </a>
+                </li>
+                <li class="nav-item nav-logout">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-wrapper" id="mainWrapper">
+
+        <!-- ===== TOP NAVBAR ===== -->
+        <header class="top-navbar">
+            <div class="navbar-left">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Processing Resumes</h1>
+            </div>
+            <div class="navbar-right">
+                <button class="navbar-icon-btn" onclick="window.location.href='dashboard.html'">
+                    <i class="fas fa-home"></i>
+                </button>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <button class="profile-btn" id="profileBtn">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span class="profile-name">Recruiter</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-user-circle"></i> Profile
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <hr class="dropdown-divider">
+                        <a href="dashboard.html" class="dropdown-item dropdown-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN AREA ===== -->
+        <main class="main-content processing-layout">
+
+            <!-- Info + Loader -->
+            <section class="processing-main-card">
+                <h2 class="section-title">Processing Resumes</h2>
+                <p class="processing-text">Your resumes are being analyzed. Please wait while we extract skills and match them with the job description.</p>
+
+                <div class="processing-loader">
+                    <div class="processing-spinner"></div>
+                    <p class="processing-loader-text" id="loaderText">Analyzing resumes...</p>
+                </div>
+
+                <div class="processing-progress">
+                    <div class="progress-bar-track">
+                        <div class="progress-bar-fill" id="progressFill" style="width: 0%;"></div>
+                    </div>
+                    <div class="processing-progress-meta">
+                        <span id="progressPercent">0% Completed</span>
+                        <span id="processedCount">Processed: 0 / 0 resumes</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Steps + After Completion -->
+            <section class="processing-side-card">
+                <h3 class="section-title">Processing Steps</h3>
+                <ul class="processing-steps" id="processingSteps">
+                    <li class="done">✔ Resume Files Uploaded</li>
+                    <li>⟳ Extracting Text From Resumes</li>
+                    <li>⟳ Cleaning &amp; Preprocessing Text</li>
+                    <li>⟳ Extracting Skills &amp; Keywords</li>
+                    <li>⟳ Matching With Job Description</li>
+                    <li>⟳ Calculating Similarity Score</li>
+                    <li>⟳ Ranking Candidates</li>
+                </ul>
+
+                <div class="processing-after" id="afterCompletion" style="display:none;">
+                    <p class="processing-complete-text">Processing completed successfully.</p>
+                    <button id="viewResultsBtn" class="btn btn-primary btn-full">
+                        View Ranking Results
+                    </button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="../javascript/dashboard.js"></script>
+    <script src="../javascript/processing.js"></script>
+</body>
+</html>
+

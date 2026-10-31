@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Resume Details</title>
+</head>
+<body>
+  <h2>Resume Details</h2>
+  <h3 id="name"></h3>
+  <pre id="content"></pre>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const file = params.get("file");
+    const screening = params.get("screening");
+
+    const url = screening
+      ? `/api/screening/${encodeURIComponent(screening)}`
+      : '/api/results';
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        const candidateList = data.results || [];
+        const candidate = candidateList.find(r => r.name === file);
+        console.log(candidate);
+        if (candidate) {
+          document.getElementById("name").textContent = candidate.name;
+          document.getElementById("content").textContent =
+            `Score: ${candidate.score}%
+Skills: ${(candidate.skills || []).join(', ')}
+
+🔍 Resume Preview:
+${candidate.text?.slice(0, 500) || "No preview"}`;
+        } else {
+          document.getElementById("name").textContent = file || "Not found";
+          document.getElementById("content").textContent = "Candidate not found in results.";
+        }
+      });
+  </script>
+</body>
+</html>
