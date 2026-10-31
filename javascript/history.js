@@ -1,6 +1,8 @@
 // history.js - Logic for the full Screening History page
 
-const HIST_API_BASE = 'http://127.0.0.1:5000/api';
+const HIST_API_BASE = (window.location.origin && window.location.origin.startsWith('http'))
+    ? window.location.origin + '/api'
+    : 'http://127.0.0.1:5000/api';
 
 let allHistory = [];
 

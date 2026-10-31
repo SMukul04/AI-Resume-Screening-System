@@ -13,14 +13,14 @@ async function loadResults(screeningId) {
 
     let data;
     if (screeningId) {
-      const res = await fetch(`http://127.0.0.1:5000/api/screening/${encodeURIComponent(screeningId)}`);
+      const res = await fetch(`${RES_API_BASE}/screening/${encodeURIComponent(screeningId)}`);
       if (!res.ok) throw new Error('Failed to fetch screening');
       data = await res.json();
       allCandidates = Array.isArray(data.results) ? data.results : [];
       const roleEl = document.getElementById('resultsJobRole');
       if (roleEl) roleEl.textContent = data.job_title || roleEl.textContent;
     } else {
-      const res = await fetch('http://127.0.0.1:5000/api/results');
+      const res = await fetch(`${RES_API_BASE}/results`);
       data = await res.json();
       allCandidates = data.results || [];
     }

@@ -1,12 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Resume Details</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Details - AI Resume Screening System</title>
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .details-container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 32px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      font-family: 'Inter', sans-serif;
+    }
+    .details-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+    }
+    .details-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a202c;
+    }
+    .details-score {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a73e8;
+    }
+    .details-meta-row {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .details-meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .details-meta-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .details-meta-value {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1e293b;
+      margin-top: 4px;
+    }
+    .details-content-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 20px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #334155;
+      max-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .details-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+  </style>
 </head>
 <body>
-  <h2>Resume Details</h2>
-  <h3 id="name"></h3>
-  <pre id="content"></pre>
+  <div class="details-container">
+    <div class="details-header">
+      <div>
+        <h1 class="details-title" id="candidateName">Loading candidate...</h1>
+        <p style="color: #64748b; font-size: 14px; margin-top: 4px;" id="candidateFile"></p>
+      </div>
+      <div style="text-align: right;">
+        <span class="details-meta-label">Screening Match Score</span>
+        <div class="details-score" id="candidateScore">--%</div>
+      </div>
+    </div>
+
+    <div class="details-meta-row">
+      <div class="details-meta-item">
+        <span class="details-meta-label">Matched Skills</span>
+        <span class="details-meta-value" id="candidateSkills">-</span>
+      </div>
+      <div class="details-meta-item">
+        <span class="details-meta-label">Status</span>
+        <span class="details-meta-value" id="candidateStatus">Analyzed</span>
+      </div>
+    </div>
+
+    <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px; color: #1e293b;">
+      <i class="fas fa-file-alt"></i> Resume Text Preview
+    </h3>
+    <div class="details-content-box" id="resumeText">Loading preview...</div>
+
+    <div class="details-actions">
+      <button class="btn btn-outline" id="backBtn">
+        <i class="fas fa-arrow-left"></i> Back to Results
+      </button>
+      <a class="btn btn-primary" id="viewOriginalBtn" target="_blank" rel="noopener noreferrer" style="display:none;">
+        <i class="fas fa-external-link-alt"></i> View Original Document
+      </a>
+    </div>
+  </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -17,24 +126,47 @@
       ? `/api/screening/${encodeURIComponent(screening)}`
       : '/api/results';
 
+    document.getElementById('backBtn').addEventListener('click', () => {
+      if (screening) {
+        window.location.href = `results.html?screening=${encodeURIComponent(screening)}`;
+      } else {
+        window.location.href = 'results.html';
+      }
+    });
+
     fetch(url)
       .then(res => res.json())
       .then(data => {
         const candidateList = data.results || [];
-        const candidate = candidateList.find(r => r.name === file);
-        console.log(candidate);
-        if (candidate) {
-          document.getElementById("name").textContent = candidate.name;
-          document.getElementById("content").textContent =
-            `Score: ${candidate.score}%
-Skills: ${(candidate.skills || []).join(', ')}
+        const candidate = candidateList.find(r => r.name === file || r.filename === file);
 
-🔍 Resume Preview:
-${candidate.text?.slice(0, 500) || "No preview"}`;
+        if (candidate) {
+          document.getElementById("candidateName").textContent = candidate.name || file;
+          document.getElementById("candidateFile").textContent = candidate.filename ? `Source: ${candidate.filename}` : '';
+          document.getElementById("candidateScore").textContent = `${candidate.score}%`;
+          document.getElementById("candidateSkills").textContent = (candidate.skills && candidate.skills.length > 0)
+            ? candidate.skills.join(', ')
+            : 'No matching JD skills identified';
+
+          let preview = candidate.text || "No extractable text found.";
+          if (candidate.extraction_error) {
+            preview = `[Extraction Notice: ${candidate.extraction_error}]\n\n` + preview;
+          }
+          document.getElementById("resumeText").textContent = preview;
+
+          if (candidate.filename) {
+            const viewBtn = document.getElementById("viewOriginalBtn");
+            viewBtn.href = `/uploads/${encodeURIComponent(candidate.filename)}`;
+            viewBtn.style.display = 'inline-flex';
+          }
         } else {
-          document.getElementById("name").textContent = file || "Not found";
-          document.getElementById("content").textContent = "Candidate not found in results.";
+          document.getElementById("candidateName").textContent = file || "Candidate Not Found";
+          document.getElementById("resumeText").textContent = "Candidate record could not be found in this screening session.";
         }
+      })
+      .catch(err => {
+        document.getElementById("candidateName").textContent = "Error Loading Details";
+        document.getElementById("resumeText").textContent = "Could not connect to the backend server.";
       });
   </script>
 </body>

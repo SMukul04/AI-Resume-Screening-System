@@ -3,3 +3,5 @@ flask-cors
 PyMuPDF
 scikit-learn
 sentence-transformers
+python-docx
+pytest

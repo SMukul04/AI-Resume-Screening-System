@@ -1,6 +1,8 @@
 // Upload Resumes page JS
 
-const UP_API_BASE = 'http://127.0.0.1:5000/api';
+const UP_API_BASE = (window.location.origin && window.location.origin.startsWith('http'))
+    ? window.location.origin + '/api'
+    : 'http://127.0.0.1:5000/api';
 
 let selectedFiles = [];
 let uploadedFiles = [];
@@ -13,68 +15,84 @@ document.addEventListener('DOMContentLoaded', () => {
     const startProcessingBtn = document.getElementById('startProcessingFromUpload');
     const backToDashboardBtn = document.getElementById('backToDashboard');
 
-    browseBtn.addEventListener('click', () => fileInput.click());
+    browseBtn?.addEventListener('click', () => fileInput?.click());
 
-    fileInput.addEventListener('change', (e) => {
-        addSelectedFiles(Array.from(e.target.files));
+    fileInput?.addEventListener('change', (e) => {
+        addSelectedFiles(Array.from(e.target.files || []));
     });
 
-    ['dragenter', 'dragover'].forEach(evt => {
-        dropZone.addEventListener(evt, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            dropZone.classList.add('drag-over');
+    if (dropZone) {
+        ['dragenter', 'dragover'].forEach(evt => {
+            dropZone.addEventListener(evt, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.add('drag-over');
+            });
         });
-    });
 
-    ['dragleave', 'drop'].forEach(evt => {
-        dropZone.addEventListener(evt, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            dropZone.classList.remove('drag-over');
+        ['dragleave', 'drop'].forEach(evt => {
+            dropZone.addEventListener(evt, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('drag-over');
+            });
         });
-    });
 
-    dropZone.addEventListener('drop', (e) => {
-        const files = Array.from(e.dataTransfer.files || []);
-        addSelectedFiles(files);
-    });
+        dropZone.addEventListener('drop', (e) => {
+            const files = Array.from(e.dataTransfer?.files || []);
+            addSelectedFiles(files);
+        });
+    }
 
-    uploadBtn.addEventListener('click', () => {
+    uploadBtn?.addEventListener('click', () => {
         if (!selectedFiles.length) {
-            showToast('Please select at least one resume file', 'warning');
+            showToast('Please select at least one PDF or DOCX resume file', 'warning');
             return;
         }
         uploadSelectedFiles();
     });
 
-    startProcessingBtn.addEventListener('click', () => {
+    startProcessingBtn?.addEventListener('click', () => {
         window.location.href = 'processing.html';
     });
 
-    backToDashboardBtn.addEventListener('click', () => {
+    backToDashboardBtn?.addEventListener('click', () => {
         window.location.href = 'dashboard.html';
     });
 
-    // Try to load existing uploaded info
+    // Load existing uploaded files
     loadExistingUploads();
 });
 
 function addSelectedFiles(files) {
-    const allowed = ['pdf', 'doc', 'docx'];
+    const allowed = ['pdf', 'docx'];
+    let rejectedDocCount = 0;
+
     files.forEach(file => {
         const ext = file.name.split('.').pop().toLowerCase();
-        if (!allowed.includes(ext)) return;
+        if (ext === 'doc') {
+            rejectedDocCount++;
+            return;
+        }
+        if (!allowed.includes(ext)) {
+            return;
+        }
 
         if (!selectedFiles.find(f => f.name === file.name && f.size === file.size)) {
             selectedFiles.push(file);
         }
     });
+
+    if (rejectedDocCount > 0) {
+        showToast('Legacy .doc format is not supported. Please convert to .docx or .pdf.', 'warning');
+    }
+
     updateSelectedCount();
 }
 
 function updateSelectedCount() {
     const label = document.getElementById('selectedCount');
+    if (!label) return;
     if (!selectedFiles.length) {
         label.textContent = 'No files selected';
     } else {
@@ -92,24 +110,21 @@ async function uploadSelectedFiles() {
             body: formData
         });
 
-        if (!res.ok) throw new Error('Upload failed');
-
         const data = await res.json();
-        showToast(data.message || 'Resumes uploaded', 'success');
+        if (!res.ok) {
+            throw new Error(data.error || 'Upload failed');
+        }
+
+        showToast(data.message || 'Resumes uploaded successfully', 'success');
+        if (data.warnings && data.warnings.length) {
+            data.warnings.forEach(w => showToast(w, 'warning'));
+        }
+
         await loadExistingUploads();
         selectedFiles = [];
         updateSelectedCount();
     } catch (err) {
-        // Fallback: just show them in the local table
-        uploadedFiles = uploadedFiles.concat(selectedFiles.map(f => ({
-            filename: f.name,
-            size: f.size,
-            status: 'Uploaded'
-        })));
-        renderUploadedTable();
-        selectedFiles = [];
-        updateSelectedCount();
-        showToast('Files added locally (backend not running)', 'warning');
+        showToast(err.message || 'Error uploading files', 'error');
     }
 }
 
@@ -120,20 +135,22 @@ async function loadExistingUploads() {
         const data = await res.json();
         uploadedFiles = Array.isArray(data.resumes) ? data.resumes : [];
     } catch {
-        // ignore, backend may not be running
+        // backend may be starting up
     }
     renderUploadedTable();
 }
 
 function renderUploadedTable() {
     const tbody = document.getElementById('uploadedTableBody');
+    if (!tbody) return;
     tbody.innerHTML = '';
 
     uploadedFiles.forEach((file) => {
         const sizeKB = Math.max(1, Math.round((file.size || 0) / 1024));
+        const displayName = file.display_name || file.filename;
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${file.filename}</td>
+            <td>${displayName}</td>
             <td>${sizeKB} KB</td>
             <td>${file.status || 'Uploaded'}</td>
             <td>
@@ -145,7 +162,8 @@ function renderUploadedTable() {
         tbody.appendChild(tr);
     });
 
-    document.getElementById('totalUploadedText').textContent =
-        `Total Resumes Uploaded: ${uploadedFiles.length}`;
+    const countEl = document.getElementById('totalUploadedText');
+    if (countEl) {
+        countEl.textContent = `Total Resumes Uploaded: ${uploadedFiles.length}`;
+    }
 }
-

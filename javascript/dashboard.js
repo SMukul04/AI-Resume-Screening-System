@@ -18,7 +18,7 @@ const logoutBtn = document.getElementById('logoutBtn');
 // ============================
 // Sidebar Toggle
 // ============================
-sidebarToggle.addEventListener('click', () => {
+sidebarToggle?.addEventListener('click', () => {
     const isMobile = window.innerWidth <= 768;
 
     if (isMobile) {
@@ -47,14 +47,14 @@ function toggleOverlay() {
 // ============================
 // Profile Dropdown
 // ============================
-profileBtn.addEventListener('click', (e) => {
+profileBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     profileDropdown.classList.toggle('open');
     notificationPanel.classList.remove('open');
 });
 
 document.addEventListener('click', (e) => {
-    if (!profileDropdown.contains(e.target)) {
+    if (profileDropdown && !profileDropdown.contains(e.target)) {
         profileDropdown.classList.remove('open');
     }
 });
@@ -62,18 +62,18 @@ document.addEventListener('click', (e) => {
 // ============================
 // Notification Panel
 // ============================
-notificationBtn.addEventListener('click', (e) => {
+notificationBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     notificationPanel.classList.toggle('open');
     profileDropdown.classList.remove('open');
 });
 
-closeNotifBtn.addEventListener('click', () => {
+closeNotifBtn?.addEventListener('click', () => {
     notificationPanel.classList.remove('open');
 });
 
 document.addEventListener('click', (e) => {
-    if (!notificationPanel.contains(e.target) && !notificationBtn.contains(e.target)) {
+    if (notificationPanel && !notificationPanel.contains(e.target) && notificationBtn && !notificationBtn.contains(e.target)) {
         notificationPanel.classList.remove('open');
     }
 });
@@ -236,7 +236,7 @@ function deleteScreening(id) {
     fetch(`${API_BASE}/screening/${id}`, { method: 'DELETE' })
         .then(res => {
             if (res.ok) {
-                loadDashboardData();
+                if (document.getElementById('totalScreenings')) loadDashboardData();
                 showToast('Screening deleted successfully', 'success');
             }
         })
@@ -378,6 +378,6 @@ function renderPieChart(qualified, notQualified) {
 // Initialize
 // ============================
 document.addEventListener('DOMContentLoaded', () => {
-    loadDashboardData();
-    renderPieChart(9, 6);
+    if (document.getElementById('totalScreenings')) loadDashboardData();
+    if (document.getElementById('resumePieChart')) renderPieChart(9, 6);
 });

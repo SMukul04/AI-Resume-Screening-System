@@ -1,6 +1,8 @@
 // Processing page JS
 
-const PROC_API_BASE = 'http://127.0.0.1:5000/api';
+const PROC_API_BASE = (window.location.origin && window.location.origin.startsWith('http'))
+    ? window.location.origin + '/api'
+    : 'http://127.0.0.1:5000/api';
 
 document.addEventListener('DOMContentLoaded', () => {
     const progressFill = document.getElementById('progressFill');
@@ -14,17 +16,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let totalResumes = 0;
     let currentProcessed = 0;
     let currentStepIndex = 1; // 0 is already "uploaded"
+    let isProcessing = false;
+    let progressInterval = null;
 
     // Get current resume count
     fetch(`${PROC_API_BASE}/dashboard`)
         .then(res => res.json())
         .then(data => {
             totalResumes = data.workflow?.resumes_count || data.current_screening?.resumes_uploaded || 0;
-            if (!totalResumes) totalResumes = 10;
+            if (!totalResumes) totalResumes = 1;
             processedCount.textContent = `Processed: 0 / ${totalResumes} resumes`;
         })
         .catch(() => {
-            totalResumes = 10;
+            totalResumes = 1;
             processedCount.textContent = `Processed: 0 / ${totalResumes} resumes`;
         })
         .finally(() => {
@@ -33,12 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     function updateProgress(pct) {
-        progressFill.style.width = `${pct}%`;
-        progressPercent.textContent = `${pct}% Completed`;
+        if (progressFill) progressFill.style.width = `${pct}%`;
+        if (progressPercent) progressPercent.textContent = `${pct}% Completed`;
     }
 
     function markStepDone(index) {
-        const items = stepsList.querySelectorAll('li');
+        const items = stepsList?.querySelectorAll('li') || [];
         if (!items[index]) return;
         items[index].classList.add('done');
         items[index].textContent = items[index].textContent.replace('⟳', '✔');
@@ -55,56 +59,70 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
 
         let pct = 0;
-        const interval = setInterval(() => {
+        progressInterval = setInterval(() => {
             if (pct >= 90) {
-                clearInterval(interval);
                 return;
             }
             pct += 5;
             if (pct > 90) pct = 90;
             updateProgress(pct);
 
-            // Simulate processed count
-            if (totalResumes) {
-                currentProcessed = Math.min(totalResumes, Math.round((pct / 100) * totalResumes));
+            if (totalResumes && processedCount) {
+                currentProcessed = Math.min(totalResumes, Math.max(1, Math.round((pct / 100) * totalResumes)));
                 processedCount.textContent = `Processed: ${currentProcessed} / ${totalResumes} resumes`;
             }
 
-            // Advance steps text
             if (pct % 15 === 0 && currentStepIndex < steps.length + 1) {
                 markStepDone(currentStepIndex);
-                loaderText.textContent = steps[currentStepIndex - 1];
+                if (loaderText) loaderText.textContent = steps[currentStepIndex - 1];
                 currentStepIndex++;
             }
         }, 500);
     }
 
     async function triggerBackendProcessing() {
-        await fetch('http://127.0.0.1:5000/api/process', {
-            method: 'POST'
-        });
-        finishProgressUI();
+        if (isProcessing) return;
+        isProcessing = true;
+
+        try {
+            const res = await fetch(`${PROC_API_BASE}/process`, {
+                method: 'POST'
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                if (progressInterval) clearInterval(progressInterval);
+                const errMsg = data.error || 'Processing failed on the server.';
+                if (loaderText) loaderText.textContent = `Error: ${errMsg}`;
+                showToast(errMsg, 'error');
+                return;
+            }
+            finishProgressUI();
+        } catch (err) {
+            if (progressInterval) clearInterval(progressInterval);
+            if (loaderText) loaderText.textContent = 'Network or server error during processing.';
+            showToast('Failed to connect to screening server.', 'error');
+        } finally {
+            isProcessing = false;
+        }
     }
 
     function finishProgressUI() {
+        if (progressInterval) clearInterval(progressInterval);
         updateProgress(100);
         currentProcessed = totalResumes;
-        processedCount.textContent = `Processed: ${currentProcessed} / ${totalResumes} resumes`;
+        if (processedCount) processedCount.textContent = `Processed: ${currentProcessed} / ${totalResumes} resumes`;
 
-        const items = stepsList.querySelectorAll('li');
+        const items = stepsList?.querySelectorAll('li') || [];
         items.forEach((_, idx) => markStepDone(idx));
 
-        loaderText.textContent = 'Processing completed.';
-        afterCompletion.style.display = 'block';
+        if (loaderText) loaderText.textContent = 'Processing completed.';
+        if (afterCompletion) afterCompletion.style.display = 'block';
 
         showToast('Processing completed. Results are ready.', 'success');
     }
 
-    viewResultsBtn.addEventListener('click', async () => {
-        await fetch('http://127.0.0.1:5000/api/process', {
-            method: 'POST'
-        });
+    // Step 3.4 Fix: View Results button simply navigates to results.html without duplicate POST /api/process
+    viewResultsBtn?.addEventListener('click', () => {
         window.location.href = 'results.html';
     });
 });
-
