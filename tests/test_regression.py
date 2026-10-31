@@ -429,3 +429,4 @@ def test_api_response_compatibility(client):
     stats = stats_res.get_json()
     assert 'total_screenings' in stats
     assert 'resumes_uploaded' in stats
+

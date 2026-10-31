@@ -195,3 +195,4 @@ The project is in an ideal baseline condition to transition to Phase 2 (FastAPI 
    - Rebuild the dashboard, job definition, and ranking views as modular React components with TailwindCSS / Shadcn UI.
 4. **Phase 5 (Advanced AI & Hybrid Matching):**
    - Implement text chunking with sliding-window pooling and hybrid lexical (BM25 / TF-IDF) + semantic scoring.
+
